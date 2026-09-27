@@ -3,7 +3,8 @@ import { utilService } from './util.service.js'
 export const bugService = {
     query,
     getBugById,
-    removeBug
+    removeBug,
+    saveBug
 }
 
 const bugs = utilService.readJsonFile('data/bug.json')
@@ -24,6 +25,23 @@ function removeBug(bugId) {
 
     bugs.splice(idx, 1)
     return _saveBugsToFile()
+}
+
+function saveBug(bugToSave) {
+    if (bugToSave._id) {
+        const idx = bugs.findIndex(bug => bug._id === bugToSave._id)
+        if (idx === -1) return Promise.reject(`Bug ${bugToSave._id} not found`)
+
+        bugs[idx] = { ...bugs[idx], ...bugToSave }
+        bugToSave = bugs[idx]
+    } else {
+        bugToSave._id = utilService.makeId()
+        bugToSave.createdAt = Date.now()
+        bugs.push(bugToSave)
+    }
+
+    return _saveBugsToFile()
+        .then(() => bugToSave)
 }
 
 function _saveBugsToFile() {

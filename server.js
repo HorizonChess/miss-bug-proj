@@ -16,6 +16,24 @@ app.get('/api/bug', (req, res) => {
         })
 })
 
+// Bug SAVE (create / update)
+app.get('/api/bug/save', (req, res) => {
+    const { _id, title, description, severity } = req.query
+
+    const bugToSave = {}
+    if (_id) bugToSave._id = _id
+    if (title) bugToSave.title = title
+    if (description) bugToSave.description = description
+    if (severity) bugToSave.severity = +severity
+
+    bugService.saveBug(bugToSave)
+        .then(savedBug => res.send(savedBug))
+        .catch(err => {
+            console.log('Cannot save bug', err)
+            res.status(400).send('Cannot save bug')
+        })
+})
+
 // Bug READ
 app.get('/api/bug/:bugId', (req, res) => {
     const { bugId } = req.params
