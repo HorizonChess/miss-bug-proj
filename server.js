@@ -16,4 +16,16 @@ app.get('/api/bug', (req, res) => {
         })
 })
 
+// Bug READ
+app.get('/api/bug/:bugId', (req, res) => {
+    const { bugId } = req.params
+
+    bugService.getBugById(bugId)
+        .then(bug => res.send(bug))
+        .catch(err => {
+            console.log('Cannot get bug', err)
+            res.status(400).send('Cannot get bug')
+        })
+})
+
 app.listen(3030, () => console.log('Server ready at port 3030'))
