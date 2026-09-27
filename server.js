@@ -28,4 +28,16 @@ app.get('/api/bug/:bugId', (req, res) => {
         })
 })
 
+// Bug DELETE
+app.get('/api/bug/:bugId/remove', (req, res) => {
+    const { bugId } = req.params
+
+    bugService.removeBug(bugId)
+        .then(() => res.send(`Bug ${bugId} removed`))
+        .catch(err => {
+            console.log('Cannot remove bug', err)
+            res.status(400).send('Cannot remove bug')
+        })
+})
+
 app.listen(3030, () => console.log('Server ready at port 3030'))
