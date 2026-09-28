@@ -5,7 +5,8 @@ import { loggerService } from './services/logger.service.js'
 
 const app = express()
 
-app.get('/', (req, res) => res.send('Hello there'))
+// App Configuration
+app.use(express.static('public'))
 
 // Bug LIST
 app.get('/api/bug', (req, res) => {
