@@ -1,6 +1,7 @@
 import express from 'express'
 
 import { bugService } from './services/bug.service.js'
+import { loggerService } from './services/logger.service.js'
 
 const app = express()
 
@@ -11,7 +12,7 @@ app.get('/api/bug', (req, res) => {
     bugService.query()
         .then(bugs => res.send(bugs))
         .catch(err => {
-            console.log('Cannot get bugs', err)
+            loggerService.error('Cannot get bugs', err)
             res.status(400).send('Cannot get bugs')
         })
 })
@@ -29,7 +30,7 @@ app.get('/api/bug/save', (req, res) => {
     bugService.saveBug(bugToSave)
         .then(savedBug => res.send(savedBug))
         .catch(err => {
-            console.log('Cannot save bug', err)
+            loggerService.error('Cannot save bug', err)
             res.status(400).send('Cannot save bug')
         })
 })
@@ -41,7 +42,7 @@ app.get('/api/bug/:bugId', (req, res) => {
     bugService.getBugById(bugId)
         .then(bug => res.send(bug))
         .catch(err => {
-            console.log('Cannot get bug', err)
+            loggerService.error('Cannot get bug', err)
             res.status(400).send('Cannot get bug')
         })
 })
@@ -51,11 +52,15 @@ app.get('/api/bug/:bugId/remove', (req, res) => {
     const { bugId } = req.params
 
     bugService.removeBug(bugId)
-        .then(() => res.send(`Bug ${bugId} removed`))
+        .then(() => {
+            loggerService.info(`Bug ${bugId} removed`)
+            res.send(`Bug ${bugId} removed`)
+        })
         .catch(err => {
-            console.log('Cannot remove bug', err)
+            loggerService.error('Cannot remove bug', err)
             res.status(400).send('Cannot remove bug')
         })
 })
 
-app.listen(3030, () => console.log('Server ready at port 3030'))
+const port = 3030
+app.listen(port, () => loggerService.info(`Server ready at http://127.0.0.1:${port}/`))
