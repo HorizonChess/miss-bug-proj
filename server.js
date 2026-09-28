@@ -64,7 +64,7 @@ app.get('/api/bug/:bugId', (req, res) => {
 })
 
 // Bug DELETE
-app.get('/api/bug/:bugId/remove', (req, res) => {
+app.delete('/api/bug/:bugId', (req, res) => {
     const { bugId } = req.params
 
     bugService.removeBug(bugId)
