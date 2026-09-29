@@ -9,6 +9,7 @@ const app = express()
 // App Configuration
 app.use(express.static('public'))
 app.use(cookieParser())
+app.use(express.json())
 
 // Bug LIST
 app.get('/api/bug', (req, res) => {
@@ -22,24 +23,6 @@ app.get('/api/bug', (req, res) => {
         .catch(err => {
             loggerService.error('Cannot get bugs', err)
             res.status(400).send('Cannot get bugs')
-        })
-})
-
-// Bug SAVE (create / update)
-app.get('/api/bug/save', (req, res) => {
-    const { _id, title, description, severity } = req.query
-
-    const bugToSave = {}
-    if (_id) bugToSave._id = _id
-    if (title) bugToSave.title = title
-    if (description) bugToSave.description = description
-    if (severity) bugToSave.severity = +severity
-
-    bugService.saveBug(bugToSave)
-        .then(savedBug => res.send(savedBug))
-        .catch(err => {
-            loggerService.error('Cannot save bug', err)
-            res.status(400).send('Cannot save bug')
         })
 })
 
@@ -60,6 +43,43 @@ app.get('/api/bug/:bugId', (req, res) => {
         .catch(err => {
             loggerService.error('Cannot get bug', err)
             res.status(400).send('Cannot get bug')
+        })
+})
+
+// Bug CREATE
+app.post('/api/bug', (req, res) => {
+    const { title, description, severity } = req.body
+    if (!title || !severity) return res.status(400).send('Missing title or severity')
+
+    const bugToSave = {
+        title,
+        description: description || '',
+        severity: +severity
+    }
+
+    bugService.saveBug(bugToSave)
+        .then(savedBug => res.send(savedBug))
+        .catch(err => {
+            loggerService.error('Cannot add bug', err)
+            res.status(400).send('Cannot add bug')
+        })
+})
+
+// Bug UPDATE
+app.put('/api/bug/:bugId', (req, res) => {
+    const { bugId } = req.params
+    const { title, description, severity } = req.body
+
+    const bugToSave = { _id: bugId }
+    if (title) bugToSave.title = title
+    if (description !== undefined) bugToSave.description = description
+    if (severity) bugToSave.severity = +severity
+
+    bugService.saveBug(bugToSave)
+        .then(savedBug => res.send(savedBug))
+        .catch(err => {
+            loggerService.error('Cannot update bug', err)
+            res.status(400).send('Cannot update bug')
         })
 })
 
