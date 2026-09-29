@@ -37,7 +37,7 @@ export function BugIndex() {
 
         bugService.save(bug)
             .then(savedBug => {
-                setBugs([...bugs, savedBug])
+                setBugs([savedBug, ...bugs])
                 showSuccessMsg('Bug added')
             })
             .catch(err => showErrorMsg(`Cannot add bug`, err))

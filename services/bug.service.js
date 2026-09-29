@@ -9,8 +9,8 @@ export const bugService = {
 
 const bugs = utilService.readJsonFile('data/bug.json')
 
-function query(filterBy = {}) {
-    let bugsToReturn = bugs
+function query({ filterBy = {}, sortBy = {} } = {}) {
+    let bugsToReturn = [...bugs]
 
     if (filterBy.txt) {
         const regExp = new RegExp(filterBy.txt, 'i')
@@ -25,6 +25,13 @@ function query(filterBy = {}) {
         bugsToReturn = bugsToReturn.filter(bug =>
             filterBy.labels.some(label => bug.labels && bug.labels.includes(label))
         )
+    }
+
+    const { sortField, sortDir } = sortBy
+    if (sortField === 'title') {
+        bugsToReturn.sort((bug1, bug2) => bug1.title.localeCompare(bug2.title) * sortDir)
+    } else if (sortField === 'severity' || sortField === 'createdAt') {
+        bugsToReturn.sort((bug1, bug2) => (bug1[sortField] - bug2[sortField]) * sortDir)
     }
 
     return Promise.resolve(bugsToReturn)
@@ -54,7 +61,7 @@ function saveBug(bugToSave) {
     } else {
         bugToSave._id = utilService.makeId()
         bugToSave.createdAt = Date.now()
-        bugs.push(bugToSave)
+        bugs.unshift(bugToSave)
     }
 
     return _saveBugsToFile()

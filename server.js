@@ -13,22 +13,33 @@ app.use(express.json())
 
 // Bug LIST
 app.get('/api/bug', (req, res) => {
-    let labels = req.query.labels || []
-    if (!Array.isArray(labels)) labels = [labels]
+    const queryOptions = parseQueryParams(req.query)
 
-    const filterBy = {
-        txt: req.query.txt || '',
-        minSeverity: +req.query.minSeverity || 0,
-        labels
-    }
-
-    bugService.query(filterBy)
+    bugService.query(queryOptions)
         .then(bugs => res.send(bugs))
         .catch(err => {
             loggerService.error('Cannot get bugs', err)
             res.status(400).send('Cannot get bugs')
         })
 })
+
+function parseQueryParams(queryParams) {
+    let labels = queryParams.labels || []
+    if (!Array.isArray(labels)) labels = [labels]
+
+    const filterBy = {
+        txt: queryParams.txt || '',
+        minSeverity: +queryParams.minSeverity || 0,
+        labels
+    }
+
+    const sortBy = {
+        sortField: queryParams.sortField || '',
+        sortDir: +queryParams.sortDir === -1 ? -1 : 1
+    }
+
+    return { filterBy, sortBy }
+}
 
 // Bug READ
 app.get('/api/bug/:bugId', (req, res) => {
