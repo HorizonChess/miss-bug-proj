@@ -5,11 +5,12 @@ export const bugService = {
     getById,
     save,
     remove,
-    getDefaultFilter
+    getDefaultFilter,
+    getLabels
 }
 
 function query(filterBy) {
-    return axios.get(BASE_URL, { params: filterBy })
+    return axios.get(BASE_URL, { params: filterBy, paramsSerializer: { indexes: null } })
         .then(res => res.data)
 }
 
@@ -32,5 +33,9 @@ function save(bug) {
 }
 
 function getDefaultFilter() {
-    return { txt: '', minSeverity: 0 }
+    return { txt: '', minSeverity: 0, labels: [] }
+}
+
+function getLabels() {
+    return ['back', 'front', 'critical', 'fixed', 'in progress', 'stuck']
 }

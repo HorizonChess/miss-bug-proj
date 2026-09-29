@@ -1,5 +1,6 @@
 .bug-filter {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
 
     padding-block-end: 1em;
