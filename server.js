@@ -13,9 +13,13 @@ app.use(express.json())
 
 // Bug LIST
 app.get('/api/bug', (req, res) => {
+    let labels = req.query.labels || []
+    if (!Array.isArray(labels)) labels = [labels]
+
     const filterBy = {
         txt: req.query.txt || '',
-        minSeverity: +req.query.minSeverity || 0
+        minSeverity: +req.query.minSeverity || 0,
+        labels
     }
 
     bugService.query(filterBy)
