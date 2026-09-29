@@ -30,6 +30,8 @@ export function BugDetails() {
                 <h3>{bug.title}</h3>
                 <p className="severity">Severity: <span>{bug.severity}</span></p>
                 <p className="description">{bug.description || 'No description'}</p>
+                {bug.labels && bug.labels.length > 0 &&
+                    <p className="labels">Labels: {bug.labels.join(', ')}</p>}
             </div>
         }
         <button><Link to="/bug">Back to List</Link></button>

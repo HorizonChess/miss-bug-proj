@@ -48,13 +48,14 @@ app.get('/api/bug/:bugId', (req, res) => {
 
 // Bug CREATE
 app.post('/api/bug', (req, res) => {
-    const { title, description, severity } = req.body
+    const { title, description, severity, labels } = req.body
     if (!title || !severity) return res.status(400).send('Missing title or severity')
 
     const bugToSave = {
         title,
         description: description || '',
-        severity: +severity
+        severity: +severity,
+        labels: Array.isArray(labels) ? labels : []
     }
 
     bugService.saveBug(bugToSave)
@@ -68,12 +69,13 @@ app.post('/api/bug', (req, res) => {
 // Bug UPDATE
 app.put('/api/bug/:bugId', (req, res) => {
     const { bugId } = req.params
-    const { title, description, severity } = req.body
+    const { title, description, severity, labels } = req.body
 
     const bugToSave = { _id: bugId }
     if (title) bugToSave.title = title
     if (description !== undefined) bugToSave.description = description
     if (severity) bugToSave.severity = +severity
+    if (Array.isArray(labels)) bugToSave.labels = labels
 
     bugService.saveBug(bugToSave)
         .then(savedBug => res.send(savedBug))

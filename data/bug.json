@@ -4,27 +4,31 @@
     "title": "Infinite Loop Detected",
     "description": "The app keeps spinning after clicking Save",
     "severity": 4,
-    "createdAt": 1756900000000
+    "createdAt": 1756900000000,
+    "labels": ["critical", "front"]
   },
   {
     "_id": "K3YB0RD",
     "title": "Keyboard Not Found",
     "description": "Press F1 to continue",
     "severity": 3,
-    "createdAt": 1756910000000
+    "createdAt": 1756910000000,
+    "labels": ["back", "stuck"]
   },
   {
     "_id": "C0FF33",
     "title": "404 Coffee Not Found",
     "description": "Developer productivity dropped to zero",
     "severity": 2,
-    "createdAt": 1756920000000
+    "createdAt": 1756920000000,
+    "labels": ["critical", "in progress"]
   },
   {
     "_id": "G0053",
     "title": "Unexpected Response",
     "description": "The server answered politely instead of with JSON",
     "severity": 1,
-    "createdAt": 1756930000000
+    "createdAt": 1756930000000,
+    "labels": ["back", "fixed"]
   }
 ]
