@@ -7,6 +7,8 @@ export const bugService = {
     saveBug
 }
 
+export const NOT_ALLOWED = 'Not your bug'
+
 const bugs = utilService.readJsonFile('data/bug.json')
 
 function query({ filterBy = {}, sortBy = {}, pagination = {} } = {}) {
@@ -53,29 +55,38 @@ function getBugById(bugId) {
     return Promise.resolve(bug)
 }
 
-function removeBug(bugId) {
+function removeBug(bugId, loggedinUser) {
     const idx = bugs.findIndex(bug => bug._id === bugId)
     if (idx === -1) return Promise.reject(`Bug ${bugId} not found`)
+    if (!_isAllowed(bugs[idx], loggedinUser)) return Promise.reject(NOT_ALLOWED)
 
     bugs.splice(idx, 1)
     return _saveBugsToFile()
 }
 
-function saveBug(bugToSave) {
+function saveBug(bugToSave, loggedinUser) {
     if (bugToSave._id) {
         const idx = bugs.findIndex(bug => bug._id === bugToSave._id)
         if (idx === -1) return Promise.reject(`Bug ${bugToSave._id} not found`)
+        if (!_isAllowed(bugs[idx], loggedinUser)) return Promise.reject(NOT_ALLOWED)
 
-        bugs[idx] = { ...bugs[idx], ...bugToSave }
+        // The creator stays the original one, even when an admin edits the bug
+        bugs[idx] = { ...bugs[idx], ...bugToSave, creator: bugs[idx].creator }
         bugToSave = bugs[idx]
     } else {
         bugToSave._id = utilService.makeId()
+        bugToSave.creator = { _id: loggedinUser._id, fullname: loggedinUser.fullname }
         bugToSave.createdAt = Date.now()
         bugs.unshift(bugToSave)
     }
 
     return _saveBugsToFile()
         .then(() => bugToSave)
+}
+
+// Only the bug's creator or an admin may change it
+function _isAllowed(bug, loggedinUser) {
+    return loggedinUser.isAdmin || (bug.creator && bug.creator._id === loggedinUser._id)
 }
 
 function _saveBugsToFile() {

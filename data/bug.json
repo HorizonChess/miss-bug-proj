@@ -5,7 +5,8 @@
     "description": "The app keeps spinning after clicking Save",
     "severity": 4,
     "createdAt": 1756900000000,
-    "labels": ["critical", "front"]
+    "labels": ["critical", "front"],
+    "creator": { "_id": "6iykr", "fullname": "Kiki Ki" }
   },
   {
     "_id": "K3YB0RD",
@@ -13,7 +14,8 @@
     "description": "Press F1 to continue",
     "severity": 3,
     "createdAt": 1756910000000,
-    "labels": ["back", "stuck"]
+    "labels": ["back", "stuck"],
+    "creator": { "_id": "tUZPy", "fullname": "Mumu Ma" }
   },
   {
     "_id": "C0FF33",
@@ -21,7 +23,8 @@
     "description": "Developer productivity dropped to zero",
     "severity": 2,
     "createdAt": 1756920000000,
-    "labels": ["critical", "in progress"]
+    "labels": ["critical", "in progress"],
+    "creator": { "_id": "6iykr", "fullname": "Kiki Ki" }
   },
   {
     "_id": "G0053",
@@ -29,6 +32,7 @@
     "description": "The server answered politely instead of with JSON",
     "severity": 1,
     "createdAt": 1756930000000,
-    "labels": ["back", "fixed"]
+    "labels": ["back", "fixed"],
+    "creator": { "_id": "tUZPy", "fullname": "Mumu Ma" }
   }
 ]
