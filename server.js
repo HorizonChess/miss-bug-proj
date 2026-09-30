@@ -135,8 +135,12 @@ app.delete('/api/bug/:bugId', (req, res) => {
         })
 })
 
-// User LIST
+// User LIST (admin only)
 app.get('/api/user', (req, res) => {
+    const loggedinUser = authService.validateToken(req.cookies.loginToken)
+    if (!loggedinUser) return res.status(401).send('Please login')
+    if (!loggedinUser.isAdmin) return res.status(403).send('Admins only')
+
     userService.query()
         .then(users => res.send(users))
         .catch(err => {
@@ -154,6 +158,31 @@ app.get('/api/user/:userId', (req, res) => {
         .catch(err => {
             loggerService.error('Cannot get user', err)
             res.status(400).send('Cannot get user')
+        })
+})
+
+// User DELETE (admin only, and only users who own no bugs)
+app.delete('/api/user/:userId', (req, res) => {
+    const loggedinUser = authService.validateToken(req.cookies.loginToken)
+    if (!loggedinUser) return res.status(401).send('Please login')
+    if (!loggedinUser.isAdmin) return res.status(403).send('Admins only')
+
+    const { userId } = req.params
+    if (userId === loggedinUser._id) return res.status(400).send('Cannot delete yourself')
+
+    bugService.query({ filterBy: { creatorId: userId } })
+        .then(({ bugs }) => {
+            if (bugs.length) return Promise.reject('User owns bugs')
+            return userService.removeUser(userId)
+        })
+        .then(() => {
+            loggerService.info(`User ${userId} removed`)
+            res.send(`User ${userId} removed`)
+        })
+        .catch(err => {
+            loggerService.error('Cannot remove user', err)
+            if (err === 'User owns bugs') return res.status(400).send('Cannot delete a user who owns bugs')
+            res.status(400).send('Cannot remove user')
         })
 })
 

@@ -4,7 +4,8 @@ export const userService = {
     query,
     getUserById,
     getByUsername,
-    addUser
+    addUser,
+    removeUser
 }
 
 const users = utilService.readJsonFile('data/user.json')
@@ -36,6 +37,14 @@ function addUser({ username, password, fullname }) {
             users.push(user)
             return _saveUsersToFile().then(() => _withoutPassword(user))
         })
+}
+
+function removeUser(userId) {
+    const idx = users.findIndex(user => user._id === userId)
+    if (idx === -1) return Promise.reject(`User ${userId} not found`)
+
+    users.splice(idx, 1)
+    return _saveUsersToFile()
 }
 
 function _withoutPassword(user) {
