@@ -32,7 +32,8 @@ function parseQueryParams(queryParams) {
     const filterBy = {
         txt: queryParams.txt || '',
         minSeverity: +queryParams.minSeverity || 0,
-        labels
+        labels,
+        creatorId: queryParams.creatorId || ''
     }
 
     const sortBy = {
