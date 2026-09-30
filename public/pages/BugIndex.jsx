@@ -1,6 +1,7 @@
 const { useState, useEffect } = React
 
 import { bugService } from '../services/bug.service.js'
+import { authService } from '../services/auth.service.js'
 import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service.js'
 
 import { BugFilter } from '../cmps/BugFilter.jsx'
@@ -8,6 +9,8 @@ import { BugList } from '../cmps/BugList.jsx'
 import { Pagination } from '../cmps/Pagination.jsx'
 
 export function BugIndex() {
+    const loggedinUser = authService.getLoggedinUser()
+
     const [bugs, setBugs] = useState(null)
     const [pageCount, setPageCount] = useState()
     const [filterBy, setFilterBy] = useState(bugService.getDefaultFilter())
@@ -78,7 +81,7 @@ export function BugIndex() {
         
         <header>
             <h2>Bug List</h2>
-            <button onClick={onAddBug}>Add Bug</button>
+            {loggedinUser && <button onClick={onAddBug}>Add Bug</button>}
         </header>
         
         <BugFilter 

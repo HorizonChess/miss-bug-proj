@@ -29,6 +29,7 @@ export function BugDetails() {
             <div>
                 <h3>{bug.title}</h3>
                 <p className="severity">Severity: <span>{bug.severity}</span></p>
+                {bug.creator && <p className="creator">By: {bug.creator.fullname}</p>}
                 <p className="description">{bug.description || 'No description'}</p>
                 {bug.labels && bug.labels.length > 0 &&
                     <p className="labels">Labels: {bug.labels.join(', ')}</p>}
