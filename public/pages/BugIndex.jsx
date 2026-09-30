@@ -5,6 +5,7 @@ import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service.js'
 
 import { BugFilter } from '../cmps/BugFilter.jsx'
 import { BugList } from '../cmps/BugList.jsx'
+import { Pagination } from '../cmps/Pagination.jsx'
 
 export function BugIndex() {
     const [bugs, setBugs] = useState(null)
@@ -65,7 +66,12 @@ export function BugIndex() {
     }
 
     function onSetFilterBy(filterBy) {
-        setFilterBy(prevFilter => ({ ...prevFilter, ...filterBy }))
+        setFilterBy(prevFilter => {
+            const newFilter = { ...prevFilter, ...filterBy }
+            // A filter/sort change (not a page change) goes back to the first page
+            if (!('pageIdx' in filterBy) && prevFilter.pageIdx !== undefined) newFilter.pageIdx = 0
+            return newFilter
+        })
     }
 
     return <section className="bug-index main-content">
@@ -83,5 +89,10 @@ export function BugIndex() {
             bugs={bugs} 
             onRemoveBug={onRemoveBug} 
             onEditBug={onEditBug} />
+
+        <Pagination
+            pageCount={pageCount}
+            filterBy={filterBy}
+            onSetFilterBy={onSetFilterBy} />
     </section>
 }
