@@ -30,6 +30,10 @@ function query({ filterBy = {}, sortBy = {}, pagination = {} } = {}) {
         )
     }
 
+    if (filterBy.creatorId) {
+        bugsToReturn = bugsToReturn.filter(bug => bug.creator && bug.creator._id === filterBy.creatorId)
+    }
+
     const { sortField, sortDir } = sortBy
     if (sortField === 'title') {
         bugsToReturn.sort((bug1, bug2) => bug1.title.localeCompare(bug2.title) * sortDir)
