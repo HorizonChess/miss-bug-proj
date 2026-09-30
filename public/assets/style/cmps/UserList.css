@@ -1,0 +1,20 @@
+.user-list {
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+    padding: 0;
+    list-style: none;
+}
+
+.user-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .5em 1em;
+    border: 1px solid lightgray;
+}
+
+.user-list .actions {
+    display: flex;
+    gap: .5em;
+}
