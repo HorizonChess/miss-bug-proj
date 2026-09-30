@@ -16,7 +16,7 @@ app.get('/api/bug', (req, res) => {
     const queryOptions = parseQueryParams(req.query)
 
     bugService.query(queryOptions)
-        .then(bugs => res.send(bugs))
+        .then(result => res.send(result))
         .catch(err => {
             loggerService.error('Cannot get bugs', err)
             res.status(400).send('Cannot get bugs')
@@ -38,7 +38,13 @@ function parseQueryParams(queryParams) {
         sortDir: +queryParams.sortDir === -1 ? -1 : 1
     }
 
-    return { filterBy, sortBy }
+    // No pageIdx sent means paging is off: return all bugs
+    const pagination = {
+        pageIdx: queryParams.pageIdx !== undefined ? +queryParams.pageIdx || 0 : undefined,
+        pageSize: +queryParams.pageSize || 3
+    }
+
+    return { filterBy, sortBy, pagination }
 }
 
 // Bug READ
