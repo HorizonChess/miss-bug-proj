@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import { bugService } from './services/bug.service.js'
 import { loggerService } from './services/logger.service.js'
 import { userService } from './services/user.service.js'
+import { authService } from './services/auth.service.js'
 
 const app = express()
 
@@ -142,6 +143,41 @@ app.get('/api/user/:userId', (req, res) => {
             loggerService.error('Cannot get user', err)
             res.status(400).send('Cannot get user')
         })
+})
+
+// Auth
+app.post('/api/auth/signup', (req, res) => {
+    const { username, password, fullname } = req.body
+    if (!username || !password || !fullname) return res.status(400).send('Missing username, password or fullname')
+
+    userService.addUser({ username, password, fullname })
+        .then(user => {
+            res.cookie('loginToken', authService.getLoginToken(user))
+            res.send(user)
+        })
+        .catch(err => {
+            loggerService.error('Cannot signup', err)
+            res.status(400).send('Username taken')
+        })
+})
+
+app.post('/api/auth/login', (req, res) => {
+    const { username, password } = req.body
+
+    authService.checkLogin({ username, password })
+        .then(user => {
+            res.cookie('loginToken', authService.getLoginToken(user))
+            res.send(user)
+        })
+        .catch(err => {
+            loggerService.info('Failed login', username)
+            res.status(401).send('Invalid username or password')
+        })
+})
+
+app.post('/api/auth/logout', (req, res) => {
+    res.clearCookie('loginToken')
+    res.send('Logged out')
 })
 
 const port = 3030
