@@ -1,7 +1,7 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
 
-import { bugService } from './services/bug.service.js'
+import { bugService, NOT_ALLOWED } from './services/bug.service.js'
 import { loggerService } from './services/logger.service.js'
 import { userService } from './services/user.service.js'
 import { authService } from './services/auth.service.js'
@@ -71,6 +71,9 @@ app.get('/api/bug/:bugId', (req, res) => {
 
 // Bug CREATE
 app.post('/api/bug', (req, res) => {
+    const loggedinUser = authService.validateToken(req.cookies.loginToken)
+    if (!loggedinUser) return res.status(401).send('Please login')
+
     const { title, description, severity, labels } = req.body
     if (!title || !severity) return res.status(400).send('Missing title or severity')
 
@@ -81,7 +84,7 @@ app.post('/api/bug', (req, res) => {
         labels: Array.isArray(labels) ? labels : []
     }
 
-    bugService.saveBug(bugToSave)
+    bugService.saveBug(bugToSave, loggedinUser)
         .then(savedBug => res.send(savedBug))
         .catch(err => {
             loggerService.error('Cannot add bug', err)
@@ -91,6 +94,9 @@ app.post('/api/bug', (req, res) => {
 
 // Bug UPDATE
 app.put('/api/bug/:bugId', (req, res) => {
+    const loggedinUser = authService.validateToken(req.cookies.loginToken)
+    if (!loggedinUser) return res.status(401).send('Please login')
+
     const { bugId } = req.params
     const { title, description, severity, labels } = req.body
 
@@ -100,25 +106,30 @@ app.put('/api/bug/:bugId', (req, res) => {
     if (severity) bugToSave.severity = +severity
     if (Array.isArray(labels)) bugToSave.labels = labels
 
-    bugService.saveBug(bugToSave)
+    bugService.saveBug(bugToSave, loggedinUser)
         .then(savedBug => res.send(savedBug))
         .catch(err => {
             loggerService.error('Cannot update bug', err)
+            if (err === NOT_ALLOWED) return res.status(403).send(NOT_ALLOWED)
             res.status(400).send('Cannot update bug')
         })
 })
 
 // Bug DELETE
 app.delete('/api/bug/:bugId', (req, res) => {
+    const loggedinUser = authService.validateToken(req.cookies.loginToken)
+    if (!loggedinUser) return res.status(401).send('Please login')
+
     const { bugId } = req.params
 
-    bugService.removeBug(bugId)
+    bugService.removeBug(bugId, loggedinUser)
         .then(() => {
             loggerService.info(`Bug ${bugId} removed`)
             res.send(`Bug ${bugId} removed`)
         })
         .catch(err => {
             loggerService.error('Cannot remove bug', err)
+            if (err === NOT_ALLOWED) return res.status(403).send(NOT_ALLOWED)
             res.status(400).send('Cannot remove bug')
         })
 })
