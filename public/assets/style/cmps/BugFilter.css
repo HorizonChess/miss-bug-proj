@@ -18,3 +18,32 @@
     margin-inline-start: 1em;
 }
 
+.bug-filter > button {
+    margin-inline-start: 1em;
+}
+
+.bug-filter .sort-by {
+    flex-basis: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-block-start: 0.8em;
+}
+
+.bug-filter .sort-by label {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+    margin: 0;
+}
+
+.bug-filter .sort-by input {
+    margin: 0;
+}
+
+.bug-filter select {
+    min-height: 1.8em;
+    border: 1px solid var(--gray2);
+    border-radius: .3em;
+}
+
