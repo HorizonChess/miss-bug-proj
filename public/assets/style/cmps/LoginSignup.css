@@ -1,0 +1,24 @@
+.login-page {
+    display: flex;
+    justify-content: center;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
+    width: min(240px, 90%);
+
+    padding: 1em;
+    border: 1px solid lightgray;
+    margin-block-start: 100px;
+}
+
+.login-form .btn-toggle {
+    border: none;
+    background: none;
+    font-size: .8em;
+    text-decoration: underline;
+    cursor: pointer;
+}

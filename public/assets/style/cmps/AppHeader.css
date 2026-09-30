@@ -33,3 +33,9 @@
     color: var(--clr-txt-light);
     border-block-end: 1px solid var(--clr-txt-light);
 }
+
+.app-header nav .user {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
