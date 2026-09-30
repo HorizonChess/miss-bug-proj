@@ -1,0 +1,21 @@
+[
+  {
+    "_id": "GOtHH",
+    "username": "bob",
+    "password": "bob",
+    "fullname": "Bob Admin",
+    "isAdmin": true
+  },
+  {
+    "_id": "6iykr",
+    "username": "kiki",
+    "password": "kiki",
+    "fullname": "Kiki Ki"
+  },
+  {
+    "_id": "tUZPy",
+    "username": "mumu",
+    "password": "mumu",
+    "fullname": "Mumu Ma"
+  }
+]

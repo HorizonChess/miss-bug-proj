@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser'
 
 import { bugService } from './services/bug.service.js'
 import { loggerService } from './services/logger.service.js'
+import { userService } from './services/user.service.js'
 
 const app = express()
 
@@ -118,6 +119,28 @@ app.delete('/api/bug/:bugId', (req, res) => {
         .catch(err => {
             loggerService.error('Cannot remove bug', err)
             res.status(400).send('Cannot remove bug')
+        })
+})
+
+// User LIST
+app.get('/api/user', (req, res) => {
+    userService.query()
+        .then(users => res.send(users))
+        .catch(err => {
+            loggerService.error('Cannot get users', err)
+            res.status(400).send('Cannot get users')
+        })
+})
+
+// User READ
+app.get('/api/user/:userId', (req, res) => {
+    const { userId } = req.params
+
+    userService.getUserById(userId)
+        .then(user => res.send(user))
+        .catch(err => {
+            loggerService.error('Cannot get user', err)
+            res.status(400).send('Cannot get user')
         })
 })
 
